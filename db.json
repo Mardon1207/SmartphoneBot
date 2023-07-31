@@ -1,0 +1,29 @@
+{
+    "cart": {
+        "6": {
+            "chat_id": "1937466761",
+            "brand": "Huawei",
+            "doc_id": "10"
+        },
+        "9": {
+            "chat_id": "1937466761",
+            "brand": "Apple",
+            "doc_id": "1"
+        },
+        "11": {
+            "chat_id": "1937466761",
+            "brand": "Apple",
+            "doc_id": "10"
+        },
+        "12": {
+            "chat_id": "1336583023",
+            "brand": "Vivo",
+            "doc_id": "10"
+        },
+        "13": {
+            "chat_id": "1336583023",
+            "brand": "Nokia",
+            "doc_id": "38"
+        }
+    }
+}
