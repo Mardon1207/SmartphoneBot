@@ -82,7 +82,7 @@ def get_info(update:Update,context:CallbackContext):
     k.append([add_cart])
     k.append([ortga2])
     keyboard=InlineKeyboardMarkup(k,resize_keyboard=True)
-    text=f'Smartfon nomi  {dic["name"]}\nIshlab chiqargan kompaniya  {dic["company"]}\nRangi  {dic["color"]}\nRAM  {dic["RAM"]}\nXotira  {dic["memory"]}\nprice  {dic["price"]}'
+    text=f'Smartfon nomi  {dic["name"]}\nIshlab chiqargan kompaniya  {dic["company"]}\nRangi  {dic["color"]}\nRAM  {dic["RAM"]}\nXotira  {dic["memory"]}\nNarxi  {dic["price"]} $'
     query.delete_message()
     bot.sendPhoto(chat_id=chat_id,photo=imj,caption=text,reply_markup=keyboard)
 
@@ -117,7 +117,7 @@ def back(update:Update,context:CallbackContext):
     k.append([add_cart])
     k.append([ortga2])
     keyboard=InlineKeyboardMarkup(k,resize_keyboard=True)
-    text=f'Smartfon nomi  {dic["name"]}\nIshlab chiqargan kompaniya  {dic["company"]}\nRangi  {dic["color"]}\nRAM  {dic["RAM"]}\nXotira  {dic["memory"]}\nprice  {dic["price"]}'
+    text=f'Smartfon nomi  {dic["name"]}\nIshlab chiqargan kompaniya  {dic["company"]}\nRangi  {dic["color"]}\nRAM  {dic["RAM"]}\nXotira  {dic["memory"]}\nNarxi  {dic["price"]} $'
     query.delete_message()
     bot.sendPhoto(chat_id=chat_id,photo=imj,caption=text,reply_markup=keyboard)
 
@@ -152,7 +152,7 @@ def nextn(update:Update,context:CallbackContext):
     k.append([add_cart])
     k.append([ortga2])
     keyboard=InlineKeyboardMarkup(k,resize_keyboard=True)
-    text=f'Smartfon nomi  {dic["name"]}\nIshlab chiqargan kompaniya  {dic["company"]}\nRangi  {dic["color"]}\nRAM  {dic["RAM"]}\nXotira  {dic["memory"]}\nprice  {dic["price"]}'
+    text=f'Smartfon nomi  {dic["name"]}\nIshlab chiqargan kompaniya  {dic["company"]}\nRangi  {dic["color"]}\nRAM  {dic["RAM"]}\nXotira  {dic["memory"]}\nNarxi  {dic["price"]} $'
     query.delete_message()
     bot.sendPhoto(chat_id=chat_id,photo=imj,caption=text,reply_markup=keyboard)
 
@@ -269,7 +269,7 @@ def card(update:Update,context:CallbackContext):
     text1=""
     for i in range(max):
        db_data=db.getPhone(data[i]["brand"],data[i]["doc_id"])
-       text1+=f"\n{i+1}.  Smartfon nomi { db_data['name']}  Ishlab chiqargan kompanya {db_data['company']}  rangi {db_data['color']}  xotira {db_data['RAM']}/{db_data['memory']}  narxi {db_data['price']} $" 
+       text1+=f"\n{i+1}.  Smartfon nomi { db_data['name']}  Ishlab chiqargan kompanya {db_data['company']}  rangi {db_data['color']}  xotira {db_data['RAM']}/{db_data['memory']}  Narxi {db_data['price']} $" 
     text=text0+text1
     ortga=InlineKeyboardButton(text="Ortga",callback_data="ortga")
     keyboard=InlineKeyboardMarkup([[ortga]],resize_keyboard=True)
