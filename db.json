@@ -24,6 +24,21 @@
             "chat_id": "1336583023",
             "brand": "Nokia",
             "doc_id": "38"
+        },
+        "14": {
+            "chat_id": "1336583023",
+            "brand": "Nokia",
+            "doc_id": "3"
+        },
+        "15": {
+            "chat_id": "1336583023",
+            "brand": "Nokia",
+            "doc_id": "6"
+        },
+        "16": {
+            "chat_id": "1336583023",
+            "brand": "Oppo",
+            "doc_id": "9"
         }
     }
 }
