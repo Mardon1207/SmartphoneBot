@@ -8,9 +8,9 @@ from telegram.ext import (
     CallbackContext
     )
 from db import DB
-db = DB("/home/backend2023f/SmartphoneBot/data.json")
+db = DB("https://mardon.pythonanywhere.com/setwebhook/data.json")
 from cartdb import Cart
-bd =Cart("/home/backend2023f/SmartphoneBot/data.json")
+bd =Cart("https://mardon.pythonanywhere.com/setwebhook/data.json")
 
 def start(update,context):
     chat_id=update.message.chat.id
