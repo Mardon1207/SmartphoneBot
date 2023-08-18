@@ -2,7 +2,7 @@ import telegram
 
 import os 
 from settings import TOKEN
-url = "https://backend2023f.pythonanywhere.com/setwebhook/"
+url = "https://mardon.pythonanywhere.com/setwebhook/"
 
 
 bot = telegram.Bot(TOKEN)
