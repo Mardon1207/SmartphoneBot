@@ -1,11 +1,11 @@
 import telegram
 
 import os 
-from settings import token
+from settings import TOKEN
 url = "https://backend2023f.pythonanywhere.com/setwebhook/"
 
 
-bot = telegram.Bot(token)
+bot = telegram.Bot(TOKEN)
 
 
 # bot.delete_webhook()
