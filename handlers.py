@@ -1,16 +1,15 @@
 from telegram import (
     Update,
     InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    InputMediaPhoto
+    InlineKeyboardMarkup
     )
 from telegram.ext import (
     CallbackContext
     )
 from db import DB
-db = DB("/home/Mardon/SmartphoneBot/data.json")
+db = DB("data.json")
 from cartdb import Cart
-bd =Cart("/home/Mardon/SmartphoneBot/db.json")
+bd =Cart("db.json")
 
 def start(update,context):
     chat_id=update.message.chat.id
@@ -419,3 +418,55 @@ def add_cart(update:Update,context:CallbackContext):
     doc_id=callback_data.split(',')[3]
     bd.add(brand,chat_id,doc_id)
     query.answer("Savatga qo'shildi")
+
+def phone_number(update: Update, context: CallbackContext) -> None:
+    ortga=InlineKeyboardButton(text="Ortga",callback_data="contact")
+    keyboard=InlineKeyboardMarkup([[ortga]],resize_keyboard=True)
+    update.callback_query.delete_message()
+    update.callback_query.message.reply_html(
+        text="Bizning telefon raqamlarimiz:\n\n📞 +998(88)613-99-00\n📞 +998(50)075-70-99",reply_markup=keyboard
+    )
+    
+
+def email(update: Update, context: CallbackContext) -> None:
+    ortga=InlineKeyboardButton(text="Ortga",callback_data="contact")
+    keyboard=InlineKeyboardMarkup([[ortga]],resize_keyboard=True)
+    update.callback_query.delete_message()
+    update.callback_query.message.reply_html(
+        text="Bizning elektron pochtamiz:\n\n📧 smartphonebot@gmail.com",reply_markup=keyboard
+    )
+
+def adress(update: Update, context: CallbackContext) -> None:
+    ortga=InlineKeyboardButton(text="Ortga",callback_data="contact")
+    keyboard=InlineKeyboardMarkup([[ortga]],resize_keyboard=True)
+    update.callback_query.delete_message()
+    update.callback_query.message.reply_html(
+        text="Bizning elektron adress:\n\nXXXXXXXXXXXXXXXXXXXXX",reply_markup=keyboard
+    )
+
+def location(update: Update, context: CallbackContext) -> None:
+    ortga=InlineKeyboardButton(text="Ortga",callback_data="clost")
+    keyboard=InlineKeyboardMarkup([[ortga]],resize_keyboard=True)
+    update.callback_query.delete_message()
+    context.bot.sendLocation(
+        chat_id=update.callback_query.message.chat.id,
+        latitude=47.6371,
+        longitude=-122.1237,
+        reply_markup=keyboard
+    )
+
+def clost(update:Update,context:CallbackContext):
+    query=update.callback_query
+    chat_id=query.message.chat.id
+    bot = context.bot
+    phone_number=InlineKeyboardButton(text="Phone number",callback_data="phone_number")
+    adress=InlineKeyboardButton(text="Adress",callback_data="adress")
+    location=InlineKeyboardButton(text="Location",callback_data="location")
+    email=InlineKeyboardButton(text="Email",callback_data="email")
+    ortga=InlineKeyboardButton(text="Ortga",callback_data="ortga")
+    keyboard=InlineKeyboardMarkup([
+            [phone_number,adress],[location,email],[ortga]
+        ],resize_keyboard=True)
+    text="Siz |📞 Contact| bulimini tanladingiz.\nIltimos kerakli bulimni tanlang!"
+    query.delete_message()
+    bot.send_message(chat_id=chat_id,text=text,reply_markup=keyboard)

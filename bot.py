@@ -28,6 +28,10 @@ from handlers import (
     ortga2,
     add_cart,
     menyu,
+    phone_number,
+    email,
+    location,adress,
+    clost
     )
 
 import os
@@ -57,6 +61,11 @@ dp.add_handler(CallbackQueryHandler(oldin,pattern="oldin"))
 dp.add_handler(CallbackQueryHandler(keyin,pattern="keyin"))
 dp.add_handler(CallbackQueryHandler(ortga2,pattern="ortga2"))
 dp.add_handler(CallbackQueryHandler(add_cart,pattern="add_cart"))
+dp.add_handler(CallbackQueryHandler(phone_number,pattern="phone_number"))
+dp.add_handler(CallbackQueryHandler(email,pattern="email"))
+dp.add_handler(CallbackQueryHandler(adress,pattern="adress"))
+dp.add_handler(CallbackQueryHandler(location,pattern="location"))
+dp.add_handler(CallbackQueryHandler(clost,pattern="clost"))
 dp.add_handler(CallbackQueryHandler(menyu))
 
 
