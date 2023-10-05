@@ -1,4 +1,4 @@
-from tinydb import TinyDB,Query
+from tinydb import TinyDB
 from tinydb.database import Document
 
 class DB:
