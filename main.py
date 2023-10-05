@@ -10,6 +10,7 @@ from telegram.ext import (
     Filters, 
     )
 
+
 from handlers import (
     start,
     get_info,
@@ -33,11 +34,11 @@ from handlers import (
     add_cart,
     menyu,
     phone_number,
-    adress,
-    location,
-    clost,
-    email
+    email,
+    location,adress,
+    clost
     )
+
 from settings import TOKEN
 
 app = Flask(__name__)
