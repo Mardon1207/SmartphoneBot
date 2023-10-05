@@ -3,7 +3,7 @@ from tinydb.database import Document
 
 class DB:
     def __init__(self,path):
-        self.db = TinyDB(path)
+        self.db = TinyDB(path,indent=4)
         
 
     def get_tables(self):
