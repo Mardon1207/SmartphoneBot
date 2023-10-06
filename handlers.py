@@ -7,9 +7,9 @@ from telegram.ext import (
     CallbackContext
     )
 from db import DB
-db = DB("/home/Mardon1207/SmartphoneBot/data.json")
+db = DB("/home/SMM/SmartphoneBot/data.json")
 from cartdb import Cart
-bd =Cart("/home/Mardon1207/SmartphoneBot/db.json")
+bd =Cart("/home/SMM/SmartphoneBot/db.json")
 
 def start(update,context):
     chat_id=update.message.chat.id
