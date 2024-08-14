@@ -1,472 +1,433 @@
 from telegram import (
     Update,
     InlineKeyboardButton,
-    InlineKeyboardMarkup
+    InlineKeyboardMarkup,
+    KeyboardButton,
+    ReplyKeyboardMarkup,
+    ReplyKeyboardRemove,
+    ForceReply,
+    Bot
     )
+import logging
 from telegram.ext import (
     CallbackContext
     )
-from db import DB
-db = DB("/home/SMM/SmartphoneBot/data.json")
 from cartdb import Cart
-bd =Cart("/home/SMM/SmartphoneBot/db.json")
+from datetime import datetime
+import os
+from kode import Data
+from db import DB
+from ism import Ism
+ism=Ism("ism.json")
+kode=Data("kode.json")
+db = DB("data.json")
+bd =Cart("db.json")
+from settings import TOKEN
+from datetime import datetime
+import sertifikat
 
-def start(update,context):
-    chat_id=update.message.chat.id
-    bot=context.bot
-    shop=InlineKeyboardButton(text="🛍 Shop",callback_data="shop")
-    cart=InlineKeyboardButton(text="📦 Cart",callback_data="cart")
-    contact=InlineKeyboardButton(text="📞 Contact",callback_data="contact")
-    about=InlineKeyboardButton(text="📝 About",callback_data="about")
-    keyboard=InlineKeyboardMarkup([[
-        shop,cart],[contact,about]
-    ],resize_keyboard=True)
-    text="Assalomu alaykum botimizga xush kelibsiz! \nBu yerda uzingizga yoqan smartphoneni tanlaysiz degan umidaman. Iltimos uzingizga yoqan menyuni tanlang."
-    bot.sendMessage(chat_id=chat_id, text=text,reply_markup=keyboard)
+def start(update: Update, context: CallbackContext):
+    user_first_name = update.message.from_user.first_name
+    user = update.message.from_user.username
+    profile_url = f"https://t.me/{update.message.from_user.username}" 
+    keyboard = [
+        [KeyboardButton("✍️ Test yaratish", callback_data='test_yaratish'),
+        KeyboardButton("✅ Javobni tekshirish", callback_data='javobni_tekshirish')],
+        [KeyboardButton("🎉 Sertifikatlar", callback_data='sertifikatlar'),
+        KeyboardButton("⚙️ Sozlamalar", callback_data='sozlamalar')],
+        [KeyboardButton("📟 Pullik kanallar", callback_data='pullik_kanallar'),
+        KeyboardButton("👨‍💻 Admin", callback_data='admin')],
+    ]
 
-def menyu(update:Update,context:CallbackContext):
-    query=update.callback_query
-    bot = context.bot
-    callback_data=query.data
-    if callback_data=="ortga":
-        query=update.callback_query
-        shop=InlineKeyboardButton(text="🛍 Shop",callback_data="shop")
-        cart=InlineKeyboardButton(text="📦 Cart",callback_data="cart")
-        contact=InlineKeyboardButton(text="📞 Contact",callback_data="contact")
-        about=InlineKeyboardButton(text="📝 About",callback_data="about")
-        keyboard=InlineKeyboardMarkup([[
-            shop,cart],[contact,about]
-        ],resize_keyboard=True)
-        text="Siz Menyuga qaytdingiz. Bulimlardan birini tanlang"
-        query.edit_message_text(text=text,reply_markup=keyboard)
-    if callback_data=="ortga2":
-        chat_id=query.message.chat.id
-        l=[]
-        for i in db.get_tables():
-            i=InlineKeyboardButton(text=i,callback_data="brand,"+i)
-            l.append([i])
-        ortga=InlineKeyboardButton(text="Ortga",callback_data="ortga")
-        l.append([ortga])
-        keyboard=InlineKeyboardMarkup(l,resize_keyboard=True)
-        text="Siz |🛍 Shop| bulimini tanladingiz.\nIltimos kerakli Smartphone ni tanlang!"
-        query.delete_message()
-        bot.sendMessage(chat_id=chat_id,text=text,reply_markup=keyboard)
-    a=[]
-    for i in db.get_tables():
-        a.append(i)
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    text = f"Assalomu alaykum @{user}, botimizga xush kelibsiz."
+    update.message.reply_text(text=text, reply_markup=reply_markup)
 
-def get_info(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot
-    callback_data=query.data[4:]
-    brand,id=callback_data.split(",")
-    dic=db.getPhone(brand,id)
-    imj=dic["img_url"]
-    k=[]
-    id=int(id)
-    back=InlineKeyboardButton(text="⏪",callback_data=f"back_{query.data}")
-    nextn=InlineKeyboardButton(text="⏩",callback_data=f"nextn_{query.data}")
-    lst=db.get_phone_list(brand)
-    date=callback_data
-    max=len(lst)
-    if id>1 and id<max:
-        k.append([back,nextn])
-    elif id==max:
-        k.append([back])
-    elif id==1:
-        k.append([nextn])
-    ortga2=InlineKeyboardButton(text="Ortga",callback_data=f"ortga2,{callback_data}")
-    sotib_olish=InlineKeyboardButton(text="Sotib olish",callback_data="sotib_olish")
-    add_cart=InlineKeyboardButton(text="Savatga qo'shish",callback_data=f"add_cart,{brand},{chat_id},{id}")
-    k.append([sotib_olish])
-    k.append([add_cart])
-    k.append([ortga2])
-    keyboard=InlineKeyboardMarkup(k,resize_keyboard=True)
-    text=f'Smartfon nomi  {dic["name"]}\nIshlab chiqargan kompaniya  {dic["company"]}\nRangi  {dic["color"]}\nRAM  {dic["RAM"]}\nXotira  {dic["memory"]}\nNarxi  {dic["price"]} $'
-    query.delete_message()
-    bot.sendPhoto(chat_id=chat_id,photo=imj,caption=text,reply_markup=keyboard)
+def test_yaratish(update:Update,context:CallbackContext):
+    keyboard = [
+        [KeyboardButton("✍️ Oddiy test"), KeyboardButton("📕 Fanli test")],
+        [KeyboardButton("📅 Maxsus test"), KeyboardButton("📚 Blok test")],
+        [KeyboardButton("♻️ Orqaga")]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    update.message.reply_text("❕ Kerakli bo'limni tanlang.", reply_markup=reply_markup)
 
-def back(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot
-    data=query.data[5:]
-    callback_data=data[4:]
-    brand=callback_data.split(",")[0]
-    id=callback_data.split(',')[1]
-    id=int(id)
-    id=id-1
-    dic=db.getPhone(brand,id)
-    imj=dic["img_url"]
-    k=[]
-    back=InlineKeyboardButton(text="⏪",callback_data=f"back_tel {brand},{id}")
-    nextn=InlineKeyboardButton(text="⏩",callback_data=f"nextn_tel {brand},{id}")
-    lst=db.get_phone_list(brand)
-    date=callback_data
-    max=len(lst)
-    if id>1 and id<max:
-        k.append([back,nextn])
-    elif id==max:
-        k.append([back])
-    elif id==1:
-        k.append([nextn])
-    ortga2=InlineKeyboardButton(text="Ortga",callback_data=f"ortga2,tel {callback_data}")
-    sotib_olish=InlineKeyboardButton(text="Sotib olish",callback_data="sotib_olish")
-    add_cart=InlineKeyboardButton(text="Savatga qo'shish",callback_data=f"add_cart,{brand},{chat_id},{id}")
-    k.append([sotib_olish])
-    k.append([add_cart])
-    k.append([ortga2])
-    keyboard=InlineKeyboardMarkup(k,resize_keyboard=True)
-    text=f'Smartfon nomi  {dic["name"]}\nIshlab chiqargan kompaniya  {dic["company"]}\nRangi  {dic["color"]}\nRAM  {dic["RAM"]}\nXotira  {dic["memory"]}\nNarxi  {dic["price"]} $'
-    query.delete_message()
-    bot.sendPhoto(chat_id=chat_id,photo=imj,caption=text,reply_markup=keyboard)
+def oddiy_test(update:Update,context:CallbackContext):
+    keyboard = [
+        [KeyboardButton("♻️ Orqaga")]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    update.message.reply_text("✍️ Test javoblarini yuboring va javoblarning oxiriga + qo`yishni unutmang!!!\nM-n: abcd...+ yoki 1a2b3c4d...+\n\n❕ Javoblar faqat lotin alifbosida bo'lishi shart", reply_markup=reply_markup)
 
-def nextn(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot
-    data=query.data[6:]
-    callback_data=data[4:]
-    brand=callback_data.split(",")[0]
-    id=callback_data.split(',')[1]
-    id=int(id)
-    id=id+1
-    dic=db.getPhone(brand,id)
-    imj=dic["img_url"]
-    k=[]
-    back=InlineKeyboardButton(text="⏪",callback_data=f"back_tel {brand},{id}")
-    nextn=InlineKeyboardButton(text="⏩",callback_data=f"nextn_tel {brand},{id}")
-    lst=db.get_phone_list(brand)
-    date=callback_data
-    max=len(lst)
-    if id>1 and id<max:
-        k.append([back,nextn])
-    elif id==max:
-        k.append([back])
-    elif id==1:
-        k.append([nextn])
-    ortga2=InlineKeyboardButton(text="Ortga",callback_data=f"ortga2,{callback_data}")
-    sotib_olish=InlineKeyboardButton(text="Sotib olish",callback_data="sotib_olish")
-    add_cart=InlineKeyboardButton(text="Savatga qo'shish",callback_data=f"add_cart,{brand},{chat_id},{id}")
-    k.append([sotib_olish])
-    k.append([add_cart])
-    k.append([ortga2])
-    keyboard=InlineKeyboardMarkup(k,resize_keyboard=True)
-    text=f'Smartfon nomi  {dic["name"]}\nIshlab chiqargan kompaniya  {dic["company"]}\nRangi  {dic["color"]}\nRAM  {dic["RAM"]}\nXotira  {dic["memory"]}\nNarxi  {dic["price"]} $'
-    query.delete_message()
-    bot.sendPhoto(chat_id=chat_id,photo=imj,caption=text,reply_markup=keyboard)
+def fanli_test(update:Update,context:CallbackContext):
+    keyboard = [
+        [KeyboardButton("♻️ Orqaga")]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    update.message.reply_text("✍️ Fan nomini yuboring va javoblarning oxiriga ! qo`yishni unutmang!!!.\nM-n: Matematika!", reply_markup=reply_markup)
 
-def sotib_olish(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    query.answer("Mahsulotni sotib olish uchun so'rov yuborildi!!!")
+def maxsus_test(update:Update,context:CallbackContext):
+    keyboard = [
+        [KeyboardButton("♻️ Orqaga")]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    update.message.reply_text("✍️ Faylni yuboring.\n\n❗️ Rasm yoki fayl bo'lishi mumkun.", reply_markup=reply_markup)
 
-def shop(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot
-    l=[]
-    for i in db.get_tables():
-        i=InlineKeyboardButton(text=i,callback_data="brand,"+i)
-        l.append([i])
-    ortga=InlineKeyboardButton(text="Ortga",callback_data="ortga")
-    l.append([ortga])
-    keyboard=InlineKeyboardMarkup(l,resize_keyboard=True)
-    text="Siz |🛍 Shop| bulimini tanladingiz.\nIltimos kerakli Smartphone ni tanlang!"
-    query.edit_message_text(text=text,reply_markup=keyboard)
+def blok_test(update:Update,context:CallbackContext):
+    keyboard = [
+        [KeyboardButton("♻️ Orqaga")]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    update.message.reply_text("✍️ Blok test ma'lumotlarini quyidagi ko'rinishda yuboring va javoblarning oxiriga : qo`yishni unutmang!!!.\n\nfan nomi 1/javoblar 1/ball 1\nfan nomi 2/javoblar 2/ball 2\n...\n\nM-n:\nMatematika/acbdabcdba/3.1\nFizika/bacdbcbcbcd/2.1\nOna tili/abcdbadbadbc/1.1:\n\n❗️ Fan nomi 20 ta belgidan oshmasligi shart, ball haqiqiy musbat son bo'lishi shart, javoblar soni 100 dan oshmasligi zarur. Fan va javoblar lotin alifbosida bo'lishi shart.", reply_markup=reply_markup)
 
-def contact(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot
-    phone_number=InlineKeyboardButton(text="Phone number",callback_data="phone_number")
-    adress=InlineKeyboardButton(text="Adress",callback_data="adress")
-    location=InlineKeyboardButton(text="Location",callback_data="location")
-    email=InlineKeyboardButton(text="Email",callback_data="email")
-    ortga=InlineKeyboardButton(text="Ortga",callback_data="ortga")
-    keyboard=InlineKeyboardMarkup([
-            [phone_number,adress],[location,email],[ortga]
-        ],resize_keyboard=True)
-    text="Siz |📞 Contact| bulimini tanladingiz.\nIltimos kerakli bulimni tanlang!"
-    query.edit_message_text(text=text,reply_markup=keyboard)
+def bosh_sahifa(update: Update, context: CallbackContext):
+    chat_id = update.message.chat_id
+    keyboard = [
+        [KeyboardButton("✍️ Test yaratish", callback_data='test_yaratish'),
+        KeyboardButton("✅ Javobni tekshirish", callback_data='javobni_tekshirish')],
+        [KeyboardButton("🎉 Sertifikatlar", callback_data='sertifikatlar'),
+        KeyboardButton("⚙️ Sozlamalar", callback_data='sozlamalar')],
+        [KeyboardButton("📟 Pullik kanallar", callback_data='pullik_kanallar'),
+        KeyboardButton("👨‍💻 Admin", callback_data='admin')],
+    ]
+    db.remove(chat_id=chat_id)
+    kode.remove(chat_id=chat_id)
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    text = f"Bosh sahifaga qaytdingiz!"
+    update.message.reply_text(text=text, reply_markup=reply_markup)
 
-def about(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot
-    about_us=InlineKeyboardButton(text="About us",callback_data="us_about")
-    about_the_bot=InlineKeyboardButton(text="About the bot",callback_data="the_about")
-    ortga=InlineKeyboardButton(text="Ortga",callback_data="ortga")
-    keyboard=InlineKeyboardMarkup([
-            [about_us,about_the_bot],[ortga]
-        ],resize_keyboard=True)
-    db.get_tables()
-    text="Siz |📝 About| bulimini tanladingiz.\nIltimos kerakli bulimni tanlang!"
-    query.edit_message_text(text=text,reply_markup=keyboard)
+def javoblar(update:Update,context:CallbackContext):
+    keyboard = [
+        [KeyboardButton("♻️ Orqaga")]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    update.message.reply_text("✍️ Test kodini yuboring.", reply_markup=reply_markup)
 
-def us_about(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot
-    ortga3=InlineKeyboardButton(text="Ortga",callback_data="ortga3")
-    keyboard=InlineKeyboardMarkup([
-            [ortga3]
-        ],resize_keyboard=True)
-    photo="https://thumbs.dreamstime.com/b/ic%C3%B4ne-du-logo-telegram-voronezh-russie-novembre-ronde-en-couleur-bleue-164586026.jpg"
-    text="Assalomu alaykum! Bu bot men ya'ni Mardon Sultonov tomonidan tayorlandi.\nMen hozirda TATU talabasiman. Men backend sohasiga qiziqaman va bu botni ishlab chiqdim.\nBotimiz sizga manzur buladi degan umiddaman!"
-    query.delete_message()
-    bot.sendPhoto(chat_id=chat_id,photo=photo,caption=text,reply_markup=keyboard)
+def sozlanmalar(update:Update,context:CallbackContext):
+    keyboard = [
+        [KeyboardButton("🎉 Sertifikat tanlash"),
+        KeyboardButton("✍️ Ism va familiya")],
+        [KeyboardButton("♻️ Orqaga")]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    update.message.reply_text("🛠️ Kerakli bo'limni tanlang.", reply_markup=reply_markup)
 
-def the_about(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot
-    ortga3=InlineKeyboardButton(text="Ortga",callback_data="ortga3")
-    keyboard=InlineKeyboardMarkup([
-            [ortga3]
-        ],resize_keyboard=True)
-    photo="https://avatars.githubusercontent.com/u/12576027?v=4.jpg"
-    text="Bu bot BotFather tomonidan tayorlandi.\nBu bot orqali siz 100 dan ortiq smartfonlar haqida malumotlarni olishingiz va ularning narxlari bilan tanishingiz mumkun.\nBotimiz sizga manzur buladi degan umiddaman!"
-    query.delete_message()
-    bot.sendPhoto(chat_id=chat_id,photo=photo,caption=text,reply_markup=keyboard)
+def ismkiritish(update: Update,context:CallbackContext):
+    keyboard = [
+        [KeyboardButton("♻️ Orqaga")]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    update.message.reply_text("✍️ Ismingizni va Familyangizni yuboring va oxiriga _ qo`yishni unutmang!!!\nMasalan:\nMardon_  yoki Sultonov Mardon_", reply_markup=reply_markup)
 
-def ortga3(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot
-    about_us=InlineKeyboardButton(text="About us",callback_data="us_about")
-    about_the_bot=InlineKeyboardButton(text="About the bot",callback_data="about_the_bot")
-    ortga=InlineKeyboardButton(text="Ortga",callback_data="ortga")
-    keyboard=InlineKeyboardMarkup([
-            [about_us,about_the_bot],[ortga]
-        ],resize_keyboard=True)
-    db.get_tables()
-    text="Siz |📝 About| bulimini tanladingiz.\nIltimos kerakli bulimni tanlang!"
-    query.delete_message()
-    bot.sendMessage(chat_id=chat_id,text=text,reply_markup=keyboard)
+def ismnibazaga(update: Update, context: CallbackContext):
+    messege=update.message.text[0:-1]
+    chat_id=update.message.chat_id
+    ism.remove(chat_id=chat_id)
+    ism.addism(chat_id=chat_id, ism=messege)
+    keyboard = [
+        [KeyboardButton("✍️ Test yaratish", callback_data='test_yaratish'),
+        KeyboardButton("✅ Javobni tekshirish", callback_data='javobni_tekshirish')],
+        [KeyboardButton("🎉 Sertifikatlar", callback_data='sertifikatlar'),
+        KeyboardButton("⚙️ Sozlamalar", callback_data='sozlamalar')],
+        [KeyboardButton("📟 Pullik kanallar", callback_data='pullik_kanallar'),
+        KeyboardButton("👨‍💻 Admin", callback_data='admin')],
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    text=f"✅ {messege} muvaqiyatli bazaga qushildi!"
+    update.message.reply_text(text, reply_markup=reply_markup)
 
-def cart(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot   
-    cart1=InlineKeyboardButton(text="Cart",callback_data="card")
-    order=InlineKeyboardButton(text="Order",callback_data="order")
-    clear_cart=InlineKeyboardButton(text="Clear cart",callback_data="clear_cart")
-    ortga=InlineKeyboardButton(text="Ortga",callback_data="ortga")
-    keyboard=InlineKeyboardMarkup([
-            [cart1,order],[clear_cart,ortga]
-        ],resize_keyboard=True)
-    text="Siz |📦 Cart| bulimini tanladingiz.\nIltimos kerakli bulimni tanlang!"
-    query.edit_message_text(text=text,reply_markup=keyboard)  
+def pullik(update: Update, context: CallbackContext) -> None:
+    keyboard = [[
+        InlineKeyboardButton("Kanalga qo`shilish", url='https://t.me/S_M_M_1207')
+    ]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    update.message.reply_text("Kanalimiz: @pullikkanaltavsifi", reply_markup=reply_markup)
 
-def card(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot 
-    data=bd.get_cart(str(chat_id))
-    max=len(data)
-    text0="Savatga qo'shgan smatfonlaringiz!"
-    text1=""
-    for i in range(max):
-       db_data=db.getPhone(data[i]["brand"],data[i]["doc_id"])
-       text1+=f"\n{i+1}.  Smartfon nomi { db_data['name']}  Ishlab chiqargan kompanya {db_data['company']}  rangi {db_data['color']}  xotira {db_data['RAM']}/{db_data['memory']}  Narxi {db_data['price']} $" 
-    text=text0+text1
-    ortga=InlineKeyboardButton(text="Ortga",callback_data="ortga")
-    keyboard=InlineKeyboardMarkup([[ortga]],resize_keyboard=True)
-    query.delete_message()
-    bot.sendMessage(chat_id=chat_id,text=text,reply_markup=keyboard)
-    
-def clear_cart(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bd.remove(chat_id)
-    query.answer("Savat tozalandi!!!")
+def admin(update:Update,context:CallbackContext):
+    update.message.reply_text(f"Admin: @S_M_M_1207")
 
-def order(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    data=bd.get_cart(str(chat_id))
-    max=len(data)
-    if max==0:
-        query.answer("Sotib olish uchun mahsulotlar yuq!!!")
+def oddiy_test_tuzish(update: Update, context: CallbackContext):
+    user_answer = update.message.text[0:-1]
+    nomer=len(bd.get_cart().all())+1
+    chat_id=update.message.chat_id
+    user = update.message.from_user.username
+    current_time = datetime.now().strftime("%d.%m.%Y %H:%M")
+    kun,soat=current_time.split()
+    bd.add(chat_id=chat_id,nomer=nomer,test=user_answer)
+    text=f"✅ Test bazaga qo'shildi.\n👨‍🏫 Muallif: @{user}\n✍️ Test kodi: {nomer}\n🔹 Savollar: {len(user_answer)} ta\n📆 {kun} ⏰ {soat}"
+    update.message.reply_text(text)
+
+def fan(update: Update, context: CallbackContext):
+    nomer=len(db.get_hammasi().all())+1
+    chat_id=update.message.chat_id
+    message = update.message.text[0:-1]
+    db.addfan(chat_id=chat_id,nomer=nomer,fan=message)
+    text=f"📕 Fan: {message}\n\n✍️ Test javoblarini yuboring va javoblarning oxiriga - qo`yishni unutmang!!!\nM-n: abcd...- yoki 1a2b3c4d...-\n\n❕ Javoblar faqat lotin alifbosida bo'lishi shart."
+    update.message.reply_text(text)
+
+def fanli_test_tuzish(update: Update, context: CallbackContext):
+    user_answer = update.message.text[0:-1]
+    chat_id=update.message.chat_id
+    message = db.get_fan(chat_id=chat_id)[0]['fan']
+    nomer=len(bd.get_cart().all())+1
+    user = update.message.from_user.username
+    current_time = datetime.now().strftime("%d.%m.%Y %H:%M")
+    kun,soat=current_time.split()
+    bd.addfan(chat_id=chat_id,nomer=nomer,test=user_answer,fan=message)
+    text=f"✅ Test bazaga qo'shildi.\n👨‍🏫 Muallif: @{user}\n📕 Fan: {message}\n✍️ Test kodi: {nomer}\n🔹 Savollar: {len(user_answer)} ta\n📆 {kun} ⏰ {soat}"
+    db.remove(chat_id=chat_id)
+    update.message.reply_text(text)
+
+def maxsus_test_tuzish(update: Update, context: CallbackContext):
+    if update.message.document is not None:
+        photo = update.message.document
     else:
-        query.answer("Mahsulotlarni sotib olish uchun surov yuborildi!!!")
-
-def brand(update:Update,context:CallbackContext):
-    query=update.callback_query
-    callback_data=query.data.split(',')[1]
-    text1="Siz "+callback_data+" telifonini tanladingiz. Biz sizga maslahat beradigan telifonlar quydagilardan ibora. Iltimos o'zindz istagan telifonni tanlang!"
-    k=[]
-    x=db.get_phone_list(callback_data)
-    b=0
-    d=10
-    date=callback_data
-    m=len(x)
-    if m-b-10>=0:
-        d=b+10
-    elif m-b-10<0:
-        d=m
-    for j in range(b,d):
-        data=db.getPhone(date,j+1)
-        a=InlineKeyboardButton(text=f"{x[j].split(',')[0]} {data['color']} {data['RAM']}/{data['memory']}",callback_data=f'tel {callback_data},'+x[j].split(',')[1])
-        k.append([a])
-    ortga1=InlineKeyboardButton(text="Ortga",callback_data="shop")
-    oldin=InlineKeyboardButton(text="⏪",callback_data=f"oldin,{b},{m},{date}")
-    keyin=InlineKeyboardButton(text="⏩",callback_data=f"keyin,{b},{m},{date}")
-    if b>0 and d<m:
-        k.append([oldin,keyin])
-    elif b>0 and d>=m:
-        k.append([oldin])
-    elif b<=0 and d<m:
-        k.append([keyin])
-    k.append([ortga1])
-    keyboard1=InlineKeyboardMarkup(k,resize_keyboard=True)
-    query.edit_message_text(text=text1,reply_markup=keyboard1)
-
-def oldin(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot 
-    callback_data=query.data.split(',')[3]
-    date=callback_data
-    x=db.get_phone_list(callback_data)
-    k=[]
-    b=int(query.data.split(',')[1])
-    b=b-10
-    m=int(query.data.split(',')[2])
-    if m-b-10>=0:
-        d=b+10
-    elif m-b-10<0:
-        d=m
-    for j in range(b,d):
-        data=db.getPhone(date,j+1)
-        a=InlineKeyboardButton(text=f"{x[j].split(',')[0]} {data['color']} {data['RAM']}/{data['memory']}",callback_data=f'tel {callback_data},'+x[j].split(',')[1])
-        k.append([a])
-    ortga1=InlineKeyboardButton(text="Ortga",callback_data="shop")
-    oldin=InlineKeyboardButton(text="⏪",callback_data=f"oldin,{b},{m},{date}")
-    keyin=InlineKeyboardButton(text="⏩",callback_data=f"keyin,{b},{m},{date}")
-    if b>0 and d<m:
-        k.append([oldin,keyin])
-    elif b>0 and d>=m:
-        k.append([oldin])
-    elif b<=0 and d<m:
-        k.append([keyin])
-    k.append([ortga1])
-    text1="Siz "+callback_data+" telifonini tanladingiz. Biz sizga maslahat beradigan telifonlar quydagilardan ibora. Iltimos o'zindz istagan telifonni tanlang!"
-    keyboard1=InlineKeyboardMarkup(k,resize_keyboard=True)
-    query.edit_message_text(text=text1,reply_markup=keyboard1)
-
-def keyin(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot 
-    callback_data=query.data.split(',')[3]
-    date=callback_data
-    x=db.get_phone_list(callback_data)
-    k=[]
-    b=int(query.data.split(',')[1])
-    b=b+10
-    m=int(query.data.split(',')[2])
-    if m-b-10>=0:
-        d=b+10
-    elif m-b-10<0:
-        d=m
-    for j in range(b,d):
-        data=db.getPhone(date,j+1)
-        a=InlineKeyboardButton(text=f"{x[j].split(',')[0]} {data['color']} {data['RAM']}/{data['memory']}",callback_data=f'tel {callback_data},'+x[j].split(',')[1])
-        k.append([a])
-    ortga1=InlineKeyboardButton(text="Ortga",callback_data="shop")
-    oldin=InlineKeyboardButton(text="⏪",callback_data=f"oldin,{b},{m},{date}")
-    keyin=InlineKeyboardButton(text="⏩",callback_data=f"keyin,{b},{m},{date}")
-    if b>0 and d<m:
-        k.append([oldin,keyin])
-    elif b>0 and d>=m:
-        k.append([oldin])
-    elif b<=0 and d<m:
-        k.append([keyin])
-    k.append([ortga1])
-    text1="Siz "+callback_data+" telifonini tanladingiz. Biz sizga maslahat beradigan telifonlar quydagilardan ibora. Iltimos o'zindz istagan telifonni tanlang!"
-    keyboard1=InlineKeyboardMarkup(k,resize_keyboard=True)
-    query.edit_message_text(text=text1,reply_markup=keyboard1)
-
-def ortga2(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot 
-    chat_id=query.message.chat.id
+        
+        photo = update.message.photo[-1]
     l=[]
-    for i in db.get_tables():
-        i=InlineKeyboardButton(text=i,callback_data="brand,"+i)
-        l.append([i])
-    ortga=InlineKeyboardButton(text="Ortga",callback_data="ortga")
-    l.append([ortga])
-    keyboard=InlineKeyboardMarkup(l,resize_keyboard=True)
-    text="Siz |🛍 Shop| bulimini tanladingiz.\nIltimos kerakli Smartphone ni tanlang!"
-    query.delete_message()
-    bot.sendMessage(chat_id=chat_id,text=text,reply_markup=keyboard)
+    l.append(photo["file_id"])
+    nomer=len(bd.get_cart().all())+1
+    chat_id=update.message.chat_id
+    bot=Bot(TOKEN)
+    db.addrasm(chat_id=chat_id,photo=photo["file_id"])
+    keyboard = [
+        [KeyboardButton("✅ Davom etish"),
+        KeyboardButton("♻️ Orqaga")]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    photo = db.get_fan(chat_id=chat_id)
+    text=f"✍️ Fayl yuborishda davom etishingiz mumkin yoki keyingi bosqichga o'tish uchun ✅ Davom etish tugmasini bosing.\n\n🗂 Fayllar soni: {len(photo)}  ta"
+    update.message.reply_text(text,reply_markup=reply_markup)
 
-def add_cart(update:Update,context:CallbackContext):
-    query=update.callback_query
-    bot = context.bot
-    callback_data=query.data
-    brand= callback_data.split(',')[1]
-    chat_id=callback_data.split(',')[2]
-    doc_id=callback_data.split(',')[3]
-    bd.add(brand,chat_id,doc_id)
-    query.answer("Savatga qo'shildi")
+def maxsus_baza(update: Update, context: CallbackContext):
+    chat_id=update.message.chat_id
+    photo = db.get_fan(chat_id=chat_id)
+    print(photo)
+    text=f"🗂 Fayllar: {len(photo)} ta\n\n✍️ Test javoblarini yuboring va javoblarning oxiriga * qo`yishni unutmang!!!:\nM-n: abcd...* yoki 1a2b3c4d...*\n❕ Javoblar faqat lotin alifbosida bo'lishi shart."
+    update.message.reply_text(text)
 
-def phone_number(update: Update, context: CallbackContext) -> None:
-    ortga=InlineKeyboardButton(text="Ortga",callback_data="contact")
-    keyboard=InlineKeyboardMarkup([[ortga]],resize_keyboard=True)
-    update.callback_query.delete_message()
-    update.callback_query.message.reply_html(
-        text="Bizning telefon raqamlarimiz:\n\n📞 +998(88)613-99-00\n📞 +998(50)075-70-99",reply_markup=keyboard
-    )
+def maxsus_baza_kiritish(update: Update, context: CallbackContext):
+    chat_id=update.message.chat_id
+    photo = db.get_fan(chat_id=chat_id)
+    message = update.message.text[0:-1]
+    nomer=len(bd.get_cart().all())+1
+    user = update.message.from_user.username
+    current_time = datetime.now().strftime("%d.%m.%Y %H:%M")
+    kun,soat=current_time.split()
+    bd.addmaxsus(chat_id=chat_id,nomer=nomer,photo=photo ,test=message)
+    text=f"✅ Test bazaga qo'shildi.\n👨‍🏫 Muallif: @{user}\n📕 fayllar: {len(photo)}\n✍️ Test kodi: {nomer}\n📆 {kun} ⏰ {soat}"
+    db.remove(chat_id=chat_id)
+    update.message.reply_text(text)
+
+def blok_test_tuzish(update: Update, context: CallbackContext):
+    user_answer = update.message.text[0:-1]
+    if user_answer.find("\n") > 0:
+        l = user_answer.split("\n")  # Yangi qator bo'yicha ajratamiz
+        print(l)
+    elif user_answer.find(" ") >0:
+        l = user_answer.split() 
+        print(l)
+    else:
+        l=[user_answer]
+    nomer = len(bd.get_cart().all()) + 1
+    
+    chat_id = update.message.chat_id
+    
+    try:
+        bd.addblok(chat_id=chat_id, nomer=nomer, blok=user_answer)
+        print(chat_id)
+        # To'liq matnni tayyorlash
+        text = ""
+        for i in range(len(l)):
+            item = l[i].split('/')
+            text += f"❕ Blok {i+1}:\n📚 Fan: {item[0]}\n✅ Javob: {item[1]}\n📊 Ball: {item[2]}\n\n"
+        text += "✅ Test bazaga qo'shildi."
+        update.message.reply_text(text)
+    except:
+        text = f"❕ Xatolik:\n📚 Ma'lumot to`g`ri emas.\nBazaga qo`shilmadi!!!"
+        update.message.reply_text(text)
+
+def javoblarni_tekshir(update: Update, context: CallbackContext):
+    kod = update.message.text[0:-1]
+    chat_id = update.message.chat_id
+    kode.addkod(kod=kod,chat_id=chat_id)
+    test = bd.get_test(nomer=kod)[0]
+    bot=Bot(TOKEN)
+    if "blok" in test:
+        
+        natija = test["blok"]
+        if natija.find("\n") > 0:
+            l = natija.split("\n")  # Yangi qator bo'yicha ajratamiz
+            print(l)
+        elif natija.find(" ") >0:
+            l = natija.split() 
+            print(l)
+        else:
+            l=[natija]
+        text ="Blok test ma'lumotlari:\n"
+        for i in range(len(l)):
+            item = l[i].split('/')
+            print(item)
+            s=0
+            s+=len(item[1])
+            text += f"❕ Blok {i+1}:\n📚 Fan: {item[0]}\n❔  Savollar: {len(item[1])} ta\n📊 Ball: {item[2]}\n\n"
+        text +="\n✍️ Yuqorida blok test ma'lumotlari bilan tanishishingiz mumkin va o'z javoblaringizni quyidagicha yuborishingiz zarur.\n1-fan javoblari\n2-fan javoblari\n3-fan javoblari \n...\nM-n: \nabcdbdcbcbdbdbcb\nabcbdbdbbcbcbcbc\nadbabdbaadbcdabd"
+        update.message.reply_text(text=text)
+    elif "photo" in test:
+        natija=test["test"]
+        for i in range(len(test["photo"])):
+            try:
+                bot.send_document(chat_id=chat_id,document=test["photo"][i]["photo"])
+            except:
+                bot.send_photo(chat_id=chat_id,photo=test["photo"][i]["photo"])
+        text=f"✍️ {test['nomer']} kodli testda {len(natija)} ta kalit mavjud. Marhamat o'z javoblaringizni yuboring.\n\nM-n: abcd... yoki 1a2b3c4d..."    
+        update.message.reply_text(text=text)
+    elif "fan" in test:
+        natija = test["test"]
+        text = f"✍️ {test['nomer']} kodli test, Fan {test['fan']}da {len(natija)} ta kalit mavjud. Marhamat o'z javoblaringizni yuboring.\n\nM-n: abcd.. yoki 1a2b3c4d..."
+        update.message.reply_text(text=text)
+    else:
+        natija=test["test"]
+        text=f"✍️ {test['nomer']} kodli testda {len(natija)} ta kalit mavjud. Marhamat o'z javoblaringizni yuboring.\n\nM-n: abcd... yoki 1a2b3c4d..."
+        update.message.reply_text(text=text)
     
 
-def email(update: Update, context: CallbackContext) -> None:
-    ortga=InlineKeyboardButton(text="Ortga",callback_data="contact")
-    keyboard=InlineKeyboardMarkup([[ortga]],resize_keyboard=True)
-    update.callback_query.delete_message()
-    update.callback_query.message.reply_html(
-        text="Bizning elektron pochtamiz:\n\n📧 smartphonebot@gmail.com",reply_markup=keyboard
-    )
+import logging
+from datetime import datetime
 
-def adress(update: Update, context: CallbackContext) -> None:
-    ortga=InlineKeyboardButton(text="Ortga",callback_data="contact")
-    keyboard=InlineKeyboardMarkup([[ortga]],resize_keyboard=True)
-    update.callback_query.delete_message()
-    update.callback_query.message.reply_html(
-        text="Bizning elektron adress:\n\nXXXXXXXXXXXXXXXXXXXXX",reply_markup=keyboard
-    )
+def tekshirish(update: Update, context: CallbackContext):
+    try:
+        chat_id = update.message.chat_id
+        ismi=ism.get_kod(chat_id=chat_id)
+        user = update.message.from_user.username
+        if len(ismi)==0:
+            ismi=user
+        else:
+            ismi=ismi[0]["kod"]
+        
+        javoblar = update.message.text
+        nomer = kode.get_kod(chat_id)[0]["kod"]
+        
+        fan = []
+        ball = []
+        l = []
+        k = []
+        m = []
 
-def location(update: Update, context: CallbackContext) -> None:
-    ortga=InlineKeyboardButton(text="Ortga",callback_data="clost")
-    keyboard=InlineKeyboardMarkup([[ortga]],resize_keyboard=True)
-    update.callback_query.delete_message()
-    context.bot.sendLocation(
-        chat_id=update.callback_query.message.chat.id,
-        latitude=47.6371,
-        longitude=-122.1237,
-        reply_markup=keyboard
-    )
+        kode.remove(chat_id=chat_id)
 
-def clost(update:Update,context:CallbackContext):
-    query=update.callback_query
-    chat_id=query.message.chat.id
-    bot = context.bot
-    phone_number=InlineKeyboardButton(text="Phone number",callback_data="phone_number")
-    adress=InlineKeyboardButton(text="Adress",callback_data="adress")
-    location=InlineKeyboardButton(text="Location",callback_data="location")
-    email=InlineKeyboardButton(text="Email",callback_data="email")
-    ortga=InlineKeyboardButton(text="Ortga",callback_data="ortga")
-    keyboard=InlineKeyboardMarkup([
-            [phone_number,adress],[location,email],[ortga]
-        ],resize_keyboard=True)
-    text="Siz |📞 Contact| bulimini tanladingiz.\nIltimos kerakli bulimni tanlang!"
-    query.delete_message()
-    bot.send_message(chat_id=chat_id,text=text,reply_markup=keyboard)
+        # Yangi qator bilan bo'sh joylarni almashtirish
+        if "\n" in javoblar or " " in javoblar:
+            if " " in javoblar:
+                javoblar = javoblar.replace(" ", "\n")
+            l = javoblar.split("\n")
+
+            # Test bloklarini olish
+            test = bd.get_test(nomer=nomer)[0]["blok"]
+            k = test.split("\n")
+
+            # Fan va ball ro'yxatlarini yaratish
+            for i in range(len(k)):
+                item = k[i].split('/')
+                fan.append(item[0])
+                ball.append(item[2])
+                m.append(item[1])
+
+            # Javoblar sonini tekshirish
+            if len(l) != len(m):
+                text = (f"❗️ Kechirasiz javob yuborishda xatolik, "
+                        f"javobingiz to'liq emas, {nomer} kodli blok testda {len(m)} ta blok mavjud, "
+                        f"sizning javoblaringiz soni {len(l)} ta, tekshirib qaytadan yuboring.\n"
+                        f"M-n: \nabcdbdcbcbdbdbcb\nabcbdbdbbcbcbcbc\nadbabdbaadbcdabd")
+                update.message.reply_text(text)
+            else:
+                z = []
+                for i in range(len(l)):
+                    mismatches = 0
+                    for char1, char2 in zip(l[i], m[i]):
+                        if char1 != char2:
+                            mismatches += 1
+                    correct_answers = len(l[i]) - mismatches
+                    total_questions = len(l[i])
+                    quality_percentage = (correct_answers * 100) / total_questions
+
+                    text = (f"💡 Blok: {i+1}\n"
+                            f"📚 Fan: {fan[i]}\n"
+                            f"✅ To'gri javoblar: {correct_answers} ta\n"
+                            f"❌ Noto'g'ri javoblar: {mismatches} ta\n"
+                            f"📊 Sifat: {quality_percentage:.2f}%")
+                    update.message.reply_text(text)
+                    z.append(correct_answers)  # to'g'ri javoblar sonini qo'shish
+
+                current_time = datetime.now().strftime("%d.%m.%Y %H:%M")
+                kun, soat = current_time.split()
+                text = (f"💡 Umumiy natija:\n💻 Test kodi: {nomer}\n\n")
+                jami = 0
+                tupladi = 0
+                for i in range(len(l)):
+                    text += f"Blok {i+1}: {z[i] * float(ball[i]):.2f}\n"
+                    tupladi += z[i] * float(ball[i])
+                    jami += len(l[i]) * float(ball[i])
+                text += (f"\n\nJami ball: {jami}\nTo'plangan ball: {tupladi}\n\n"
+                         f"📆 {kun} ⏰ {soat}\n\n"
+                         f"--------------------------\n"
+                         f"☝️ Natijangizni yaxshilash uchun REPETITSION TESTLAR va "
+                         f"Prezident maktabiga tayyorlash kanallariga a'zo bo'ling!!\n"
+                         f"Ma'lumot uchun: @pullikkanaltavsifi")
+                update.message.reply_text(text)
+        else:
+            test = bd.get_test(nomer=nomer)[0]["test"]
+            if len(javoblar) == len(test):
+                mismatches = 0
+                z = []
+                current_time = datetime.now().strftime("%d.%m.%Y %H:%M")
+                kun, soat = current_time.split()
+                for char1, char2 in zip(javoblar, test):
+                    if char1 != char2:
+                        mismatches += 1
+                        z.append(len(javoblar) - mismatches)
+
+                text = (f"💡 Natijangiz:\n🙎🏻‍♂️ Foydalanuvchi: @{user}\n"
+                        f"💻 Test kodi: {nomer}\n"
+                        f"✅ To'gri javoblar: {len(javoblar) - mismatches} ta\n"
+                        f"❌ Noto'g'ri javoblar: {mismatches} ta\n"
+                        f"📊 Sifat: {(len(javoblar) - mismatches) * 100 / len(javoblar):.2f}%\n"
+                        f"📆 {kun} ⏰ {soat}\n"
+                        f"--------------------------\n"
+                        f"☝️ Natijangizni yaxshilash uchun REPETITSION TESTLAR va "
+                        f"Prezident maktabiga tayyorlash kanallariga a'zo bo'ling!!\n"
+                        f"Ma'lumot uchun: @pullikkanaltavsifi")
+                foiz=str(int((len(javoblar) - mismatches) * 100 / len(javoblar)))+' %'
+                
+                update.message.reply_text(text)
+                sertifikat.create_certificate(user_name=ismi,result=foiz,vaqt=kun,ismi="Mardon")
+                
+                with open('certificate.jpg', 'rb') as photo:
+                    context.bot.send_photo(chat_id=chat_id, photo=photo)
+            else:
+                text = (f"❗️ Kechirasiz {nomer} kodli testda {len(test)} ta kalit bor, "
+                        f"sizning javoblaringiz soni esa {len(javoblar)} ta, "
+                        f"tekshirib qaytadan yuboring.")
+                
+                update.message.reply_text(text)
+
+    except Exception as e:
+        logging.error(f"Xatolik yuz berdi: {e}")
+        text = "❌ Avval test kodini kiriting...\n❗️ Test kodidan keyin . belgisini qo`shini unutmang!!!"
+        update.message.reply_text(text)
+
+    
+
+    
+
+
+
+# def sertifikat(update: Update, context: CallbackContext):
+#     create_certificate("Ali", "Matematika", "95%")
+
+#     # Chat ID olish
+#     chat_id = update.message.chat_id
+    
+#     # Sertifikatni yuborish
+#     with open('sertifikat_yangi.png', 'rb') as photo:
+#         context.bot.send_photo(chat_id=chat_id, photo=photo)

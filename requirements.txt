@@ -16,3 +16,4 @@ tornado==6.1
 tzlocal==5.0.1
 Werkzeug==3.0.0
 requests
+reportlab
