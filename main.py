@@ -12,7 +12,6 @@ bot=Bot
 FAN, ISMNI_BAZAGA, ISMNI_BAZAGA_QUSH, FAMNI_BAZAGA_QUSH, MANNI_BAZAGA_QUSH, TELNI_BAZAGA_QUSH, FAMNI_BAZAGA, ODDIY_TEST_TUZISH, FANLI_TEST_TUZISH, MAXSUS_BAZA_KIRITISH, BLOK_TEST_TUZISH, MAXSUS_TEST_TUZISH, JAVOBLARNI_TEKSHIRISH, TEKSHIRISH, MAXSUS_BAZA,JAVOBLAR_KODI = range(16)
 app = Flask(__name__)
 @app.route('/webhook', methods=["POST", "GET"])
-
 def main():
     if request.method == 'GET':
         return 'hi from Python2022I'
@@ -123,4 +122,4 @@ def main():
         return 'ok'
 
 if __name__=='__main__':
-    app.run()
+    app.run(debug=True)
