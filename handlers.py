@@ -133,6 +133,9 @@ def blok_test(update: Update, context: CallbackContext):
 
 def bosh_sahifa(update: Update, context: CallbackContext):
     chat_id = update.message.chat_id
+    for handler in context.dispatcher.handlers.get(0, []):
+        if isinstance(handler, ConversationHandler):
+            handler.conversations.clear()
     keyboard = [
         [KeyboardButton("✍️ Test yaratish"), KeyboardButton("✅ Javobni tekshirish")],
         [KeyboardButton("⚙️ Sozlamalar"), KeyboardButton("👨‍💻 Admin")],
