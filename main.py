@@ -43,7 +43,7 @@ def main():
         conv_handler1 = ConversationHandler(
             entry_points=[MessageHandler(Filters.text("✍️ Oddiy test"), oddiy_test)],
             states={
-                ODDIY_TEST_TUZISH: [MessageHandler(Filters.text & ~Filters.command, oddiy_test_tuzish)],
+                ODDIY_TEST_TUZISH: [MessageHandler(Filters.text, oddiy_test_tuzish)],
             },
             fallbacks=[CommandHandler('cancel', cancel)],
         )
@@ -51,8 +51,8 @@ def main():
         conv_handler2 = ConversationHandler(
             entry_points=[MessageHandler(Filters.text("📕 Fanli test"), fanli_test)],
             states={
-                FAN: [MessageHandler(Filters.text & ~Filters.command, fan)],
-                FANLI_TEST_TUZISH: [MessageHandler(Filters.text & ~Filters.command, fanli_test_tuzish)],
+                FAN: [MessageHandler(Filters.text, fan)],
+                FANLI_TEST_TUZISH: [MessageHandler(Filters.text, fanli_test_tuzish)],
             },
             fallbacks=[CommandHandler('cancel', cancel)],
         )
@@ -61,7 +61,7 @@ def main():
             entry_points=[MessageHandler(Filters.text("📅 Maxsus test"), maxsus_test)],
             states={
                 MAXSUS_BAZA: [MessageHandler(Filters.text("✅ Davom etish"), maxsus_baza)],
-                MAXSUS_BAZA_KIRITISH: [MessageHandler(Filters.text & ~Filters.command, maxsus_baza_kiritish)],
+                MAXSUS_BAZA_KIRITISH: [MessageHandler(Filters.text, maxsus_baza_kiritish)],
                 MAXSUS_TEST_TUZISH: [MessageHandler(Filters.photo | Filters.document, maxsus_test_tuzish)],
             },
             fallbacks=[CommandHandler('cancel', cancel)],
@@ -70,7 +70,7 @@ def main():
         conv_handler4 = ConversationHandler(
             entry_points=[MessageHandler(Filters.text("📚 Blok test"), blok_test)],
             states={
-                BLOK_TEST_TUZISH: [MessageHandler(Filters.text & ~Filters.command, blok_test_tuzish)],
+                BLOK_TEST_TUZISH: [MessageHandler(Filters.text, blok_test_tuzish)],
 
             },
             fallbacks=[CommandHandler('cancel', cancel)],
@@ -103,13 +103,13 @@ def main():
 
 
 
-        dp.add_handler(conv_handler0)
+        
         dp.add_handler(MessageHandler(Filters.text("✍️ Test yaratish"), test_yaratish))
         dp.add_handler(MessageHandler(Filters.text("♻️ Orqaga"), bosh_sahifa))
         dp.add_handler(MessageHandler(Filters.text("⚙️ Sozlamalar"), sozlanmalar))
         dp.add_handler(MessageHandler(Filters.text("👨‍💻 Admin"), admin))
         dp.add_handler(MessageHandler(Filters.text("📟 Pullik kanallar"), pullik))
-
+        dp.add_handler(conv_handler0)
         dp.add_handler(conv_handler7)
         dp.add_handler(conv_handler6)
         dp.add_handler(conv_handler5)
