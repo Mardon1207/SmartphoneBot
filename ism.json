@@ -18,7 +18,12 @@
                 "6",
                 "9",
                 "8",
-                "10"
+                "10",
+                "5",
+                "7",
+                "8",
+                "bacb",
+                "11"
             ]
         },
         "2": {
@@ -32,6 +37,25 @@
         "3": {
             "chat_id": 6945094115,
             "user": "A_22_IT"
+        },
+        "4": {
+            "chat_id": 6650028068,
+            "user": "up_russell",
+            "ism": "Fayzullo",
+            "fam": "O'rolov",
+            "tel": "+998934945308",
+            "manzil": "Jizzax"
+        },
+        "5": {
+            "chat_id": 6514049635,
+            "user": null,
+            "ism": "Mardob",
+            "fam": "Sultonov",
+            "tel": "998992160963",
+            "manzil": "Samarqand",
+            "kodlar": [
+                "11"
+            ]
         }
     }
 }

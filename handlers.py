@@ -355,11 +355,18 @@ def blok_test_tuzish(update: Update, context: CallbackContext):
 def javoblarni_tekshir(update: Update, context: CallbackContext):
     chat_id = update.message.chat_id
     kod = str(update.message.text)
-    kodlar=ism.get_kod(chat_id)[0]["kodlar"]
-    ism.add_test_code(chat_id=chat_id,test_code=kod)
+    print(kod)
+    kodlar = ism.get_kod(chat_id)
+    if kodlar and "kodlar" in kodlar[0]:
+        kodlar = kodlar[0]["kodlar"]
+    else:
+        kodlar = []
+
+    print(kodlar)
+    ism.add_test_code(chat_id=chat_id, test_code=kod)
+
     if kod not in kodlar:
-        
-        kode.addkod(kod=kod,chat_id=chat_id)
+        kode.addkod(kod=kod, chat_id=chat_id)
         test = bd.get_test(nomer=kod)[0]
         bot=Bot(TOKEN)
         if "blok" in test:
