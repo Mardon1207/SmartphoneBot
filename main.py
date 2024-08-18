@@ -109,13 +109,14 @@ def main():
         dp.add_handler(MessageHandler(Filters.text("👨‍💻 Admin"), admin))
         dp.add_handler(MessageHandler(Filters.text("📟 Pullik kanallar"), pullik))
         dp.add_handler(conv_handler0)
-        dp.add_handler(conv_handler7)
-        dp.add_handler(conv_handler6)
-        dp.add_handler(conv_handler5)
-        dp.add_handler(conv_handler4)
-        dp.add_handler(conv_handler3)
-        dp.add_handler(conv_handler2)
         dp.add_handler(conv_handler1)
+        dp.add_handler(conv_handler2)
+        dp.add_handler(conv_handler3)
+        
+        dp.add_handler(conv_handler4)
+        dp.add_handler(conv_handler6)
+        dp.add_handler(conv_handler7)
+        dp.add_handler(conv_handler5)
         
         # Botni polling yordamida ishga tushiramiz
         dp.process_update(update)
