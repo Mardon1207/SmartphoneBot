@@ -102,9 +102,8 @@ def main():
 
 
 
-        
-        dp.add_handler(MessageHandler(Filters.text("✍️ Test yaratish"), test_yaratish))
         dp.add_handler(MessageHandler(Filters.text("♻️ Orqaga"), bosh_sahifa))
+        dp.add_handler(MessageHandler(Filters.text("✍️ Test yaratish"), test_yaratish))
         dp.add_handler(MessageHandler(Filters.text("⚙️ Sozlamalar"), sozlanmalar))
         dp.add_handler(MessageHandler(Filters.text("👨‍💻 Admin"), admin))
         dp.add_handler(MessageHandler(Filters.text("📟 Pullik kanallar"), pullik))
@@ -112,7 +111,6 @@ def main():
         dp.add_handler(conv_handler1)
         dp.add_handler(conv_handler2)
         dp.add_handler(conv_handler3)
-        
         dp.add_handler(conv_handler4)
         dp.add_handler(conv_handler6)
         dp.add_handler(conv_handler7)

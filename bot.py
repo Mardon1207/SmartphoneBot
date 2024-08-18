@@ -17,7 +17,12 @@ updater = Updater(TOKEN)
 
 dp = updater.dispatcher
 
+dp.add_handler(MessageHandler(Filters.text("♻️ Orqaga"), bosh_sahifa))
+dp.add_handler(MessageHandler(Filters.text("✍️ Test yaratish"), test_yaratish))
 
+dp.add_handler(MessageHandler(Filters.text("⚙️ Sozlamalar"), sozlanmalar))
+dp.add_handler(MessageHandler(Filters.text("👨‍💻 Admin"), admin))
+dp.add_handler(MessageHandler(Filters.text("📟 Pullik kanallar"), pullik))
 conv_handler0 = ConversationHandler(
     entry_points=[CommandHandler('start', start)],
     states={
@@ -85,11 +90,6 @@ conv_handler7 = ConversationHandler(
     fallbacks=[CommandHandler('cancel', cancel)],
 ) 
 
-dp.add_handler(MessageHandler(Filters.text("✍️ Test yaratish"), test_yaratish))
-dp.add_handler(MessageHandler(Filters.text("♻️ Orqaga"), bosh_sahifa))
-dp.add_handler(MessageHandler(Filters.text("⚙️ Sozlamalar"), sozlanmalar))
-dp.add_handler(MessageHandler(Filters.text("👨‍💻 Admin"), admin))
-dp.add_handler(MessageHandler(Filters.text("📟 Pullik kanallar"), pullik))
 dp.add_handler(conv_handler0)
 dp.add_handler(conv_handler1)
 dp.add_handler(conv_handler2)
