@@ -14,5 +14,4 @@ def set():
     url = 'https://smm.pythonanywhere.com/setwebhook/'
     print(bot.set_webhook(url=url))
 
-set()
-
+delete()

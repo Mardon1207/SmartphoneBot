@@ -2,7 +2,18 @@
     "ismlar": {
         "1": {
             "chat_id": 1336583023,
-            "kod": "Mardon Sultonov"
+            "user": "S_M_M_1207",
+            "ism": "Mardon",
+            "fam": "Sultonov",
+            "tel": "+998915551207",
+            "manzil": "Samarqand",
+            "kodlar": [
+                "45",
+                "46",
+                "46",
+                "47",
+                "48"
+            ]
         }
     }
 }
